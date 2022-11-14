@@ -1,0 +1,41 @@
+server:
+  port: 6001
+spring:
+  application:
+    name: EMISpringBoot-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 1.12.75.55:8848
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]': # 匹配所有请求
+            allowedOrigins: "*" #跨域处理 允许所有的域
+            allowedMethods: # 支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      routes:
+        # 管理员登录
+        - id: admin
+          uri: lb://EMISpringBoot-admin
+          predicates:
+            - Path=/admin/**
+          filters:
+            - StripPrefix=1
+        # 订单编辑
+        - id: expressDelivery
+          uri: lb://EMISpringBoot-expressDelivery
+          predicates:
+            - Path=/expressDelivery/**
+          filters:
+            - StripPrefix= 1
+        # 用户登录
+        - id: CustomerUser
+          uri: lb://EMISpringBoot-CustomerUser
+          predicates:
+            - Path=/CustomerUser/**
+          filters:
+            - StripPrefix= 1

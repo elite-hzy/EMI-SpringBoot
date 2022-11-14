@@ -1,0 +1,25 @@
+server:
+  port: 9003
+spring:
+  application:
+    name: EMISpringBoot-expressDelivery
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: hzyNB@@
+    url: jdbc:mariadb://1.12.75.55:3306/EMI-express-delivery?characterEncoding=utf-8&useSSL=false&useTimezone=true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 1.12.75.55:8848
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  # 设置别名包扫描路径，通过该属性可以给包中的类注册别名
+  type-aliases-package: EMISpringBoot.model.expressDelivery
+#  global-config:
+#    datacenter-id: 1
+#    workerId: 1
+#  #mapper.xml文件中resultType的type或者paramterType会返回自定义entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #日志
