@@ -33,9 +33,9 @@ spring:
           filters:
             - StripPrefix= 1
         # 用户登录
-        - id: CustomerUser
+        - id: customerUser
           uri: lb://EMISpringBoot-CustomerUser
           predicates:
-            - Path=/CustomerUser/**
+            - Path=/customerUser/**
           filters:
             - StripPrefix= 1

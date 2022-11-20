@@ -61,7 +61,6 @@ public abstract class AbstractController<T>{
     @PutMapping("/update")
     public Result update(@RequestBody T record) {
         boolean flag = coreService.updateById(record);
-        System.out.println("有没有执行这里");
         if (!flag) {
             return Result.error();
         }

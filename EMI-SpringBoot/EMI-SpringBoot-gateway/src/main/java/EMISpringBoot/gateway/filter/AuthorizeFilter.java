@@ -25,6 +25,7 @@ import java.security.SignatureException;
  */
 @Component
 public class AuthorizeFilter implements GlobalFilter, Ordered {
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -51,7 +52,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             //如果token正确(密码，有效期)则正常运行，否则抛出异常
             Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
             Claims body = claimsJws.getBody();//获取body
-            System.out.println("body = " + body);
+//            System.out.println("body = " + body);
             String key = body.get("key", String.class);
             String status = body.get("status", String.class);
             if (uri.contains("/admin")) {

@@ -51,18 +51,26 @@ public class AdminUserController extends AbstractController<AdminUser> {
         return adminUserService.login(user);
     }
 
-    @PostMapping("/test")
-    public void simpleTest(@RequestBody ExpressDelivery record) {
-        Result<ExpressDelivery> save = adminFeign.save(record);
-        System.out.println("save = " + save);
+//    @PostMapping("/test")
+//    public void simpleTest(@RequestBody ExpressDelivery record) {
+//        Result<ExpressDelivery> save = adminFeign.save(record);
+//        System.out.println("save = " + save);
+//    }
+
+    @PutMapping("/auth_access/{id}")
+    public Result adminSubmitDelivery(@PathVariable("id") Integer id,Integer deliveryId){
+        return adminUserService.adminSubmitDelivery(id,deliveryId);
     }
 
-    @PutMapping("auth_access/{id}")
-    public Result adminSubmitDelivery(@PathVariable("id") Integer id,Integer positionId,Integer adminId){
-        return adminUserService.adminSubmitDelivery(id,positionId,adminId);
+
+    //强制关闭订单
+
+    /**
+     * 订单编号 拒绝理由
+     * @return
+     */
+    @PutMapping("/auth_cancel")
+    public Result adminCancel(String request,Integer ExpressDeliveryId){
+        return adminUserService.adminCancel(request,ExpressDeliveryId);
     }
-
-
-
-
 }

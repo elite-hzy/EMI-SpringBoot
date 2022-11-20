@@ -10,6 +10,7 @@ import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.admin.mapper.AdminUserMapper;
 
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
+import EMISpringBoot.utils.ThreadLocalUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -78,16 +80,33 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         }
 
     }
+/*
+    id是判快递员是否同意揽件
+    断和ExpressDeliveryId(生成订单号)
+ */
 
+    /**
+     *
+     * @param id
+     * @param ExpressDeliveryId
+     * @return
+     */
     @Override
-    public Result adminSubmitDelivery(Integer id, Integer uid, Integer adminId) {
-
-        if (id == null || uid == null) {
+    public Result adminSubmitDelivery(Integer id, Integer ExpressDeliveryId) {
+        //首先判断管理员有没有判断权限
+        AdminUser adminUser = (AdminUser) ThreadLocalUtils.get();
+        if(adminUser==null){
+            throw new LeadNewsException(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        Integer userId = adminUser.getUserId();
+        System.out.println("id = " + id);
+        System.out.println("userId = " + userId);
+        if (id == null || ExpressDeliveryId == null) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
         //这里可以直接把json转为实体类
         ObjectMapper objectMapper = new ObjectMapper();
-        Object data = adminFeign.findOne(uid).getData();
+        Object data = adminFeign.findOne(ExpressDeliveryId).getData();
         ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
 
 
@@ -95,15 +114,14 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         HashMap<String, String> map = new HashMap<>();
         if (id == 1) {
             map.put("text", "1");
-            map.put("message", "已审批");
+            map.put("message", "管理员已揽收");
             //这里同时还修改一下人家能修改的权限
             HashMap<String, String> map1 = new HashMap<>();
-            String position = this.getById(adminId).getPosition().toString();
+            String position = this.getById(userId).getPosition().toString();
             //传入快递员部门的id
 
             // 编号 :"" ,"disabled":"flase"
-            map1.put("id", position);
-            map1.put("disabled","true");
+            map1.put(position, "true");
             ArrayList<Map> MapList = new ArrayList<>();
             MapList.add(map1);
             record.setAllowStationChange(JSONObject.toJSONString(MapList));
@@ -121,22 +139,124 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         return Result.ok();
     }
 
-    //起码要传入快递员所属的站点,给我一个订单号,快递员id
-    public boolean checkAuth(Integer expressDeliveryId, Integer expressUserId) {
-        //获取快递员所属的站点
-        AdminUser adminUser = this.getById(expressUserId);
+    @Override
+    public Result adminCancel(String request, Integer ExpressDeliveryId) {
+        //首先判断管理员有没有判断权限
+        AdminUser adminUser = (AdminUser) ThreadLocalUtils.get();
+        if(adminUser==null){
+            throw new LeadNewsException(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        Integer userId = adminUser.getUserId();
+        AdminUser user = this.getById(userId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ExpressDelivery delivery = objectMapper.convertValue(adminFeign.findOne(ExpressDeliveryId).getData(), ExpressDelivery.class);
+        System.out.println("接收到的delivery = " + delivery);
+        if (!checkAuth(delivery,user)){
+            throw new LeadNewsException(233,"权限不够");
+        }
+        //然后就可以直接来进行修改
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("text","9");
+        hashMap.put("message",request);
+        String jsonString = JSON.toJSONString(hashMap);
+        delivery.setExpressNotes(jsonString);
+
+        System.out.println("我想要修改的地方delivery = " + delivery);
+        adminFeign.update(delivery);
+        return Result.ok();
+    }
+
+
+    //起码要传入快递员所属的站点,给我一个订单号,快递员id,直接就是要实体类吧
+    public boolean checkAuth(ExpressDelivery delivery, AdminUser adminUser) {
         //总管理员直接不用权限
         if (adminUser.getLevel() == 0) {
             return true;
         }
         Integer position = adminUser.getPosition();
-        //订单号来获取map数据
-        ObjectMapper objectMapper = new ObjectMapper();
-        Object data = adminFeign.findOne(expressDeliveryId).getData();
-        ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
+        String positionString = position.toString();
+        //通过订单消息来获取允许操作的部门
+//        格式为 "部门号":true  map形式
+        String allowStationChange = delivery.getAllowStationChange();
+        List<Map> maps = JsonUtils.toList(allowStationChange, Map.class);
+        System.out.println("maps = " + maps);
+        for (Map map : maps) {
+            if (map.get(positionString)!=null&&map.get(positionString).equals("true")){
+                return true;
+            }
+        }
+        return false;
+        //先取出对应的
+    }
 
-        Map<String,Integer> map = JSON.parseObject(record.getAllowStationChange(), Map.class);
+    //快递单号添加-快递员所属的站点编号(添加或修改)
+    //编号 :"" ,"disabled":"flase"
+    //实际传肯定要有个数据表单实体类,返回值可以是一个快递信息的实体类
+    public void addAuthCheckPosition(Integer deliveryId, boolean disabled, ExpressDelivery delivery) {
+        if (!DeliveryIsDisable(delivery)){
+            throw new LeadNewsException(233,"快递单号不能修改");
+        }
 
-        return map.containsValue(position);
+        //这是一个map集合的json,可以先转为map
+        String change = delivery.getAllowStationChange();
+        System.out.println("change = " + change);
+        HashMap<String, String> map = new HashMap<>();
+        List<Map> maps = new ArrayList<>();
+        if (org.apache.commons.lang.StringUtils.isNotEmpty(change)) {
+            maps = JsonUtils.toList(change, Map.class);
+        }
+        String position = this.getById(deliveryId).getPosition().toString();
+        if (org.apache.commons.lang.StringUtils.isNotEmpty(change)){
+            //先判断这个list里有没有,如果有就直接修改
+            for (Map<String, String> map1 : maps) {
+                if (org.apache.commons.lang.StringUtils.isNotEmpty(map1.get("position"))){
+                    map1.put(position, String.valueOf(disabled));
+                }
+            }
+        }
+        //没有就要自己加
+        map.put(this.getById(deliveryId).getPosition().toString(), String.valueOf(disabled));
+        System.out.println("maps = " + maps);
+        System.out.println("map = " + map);
+        maps.add(map);
+        String jsonString = JSON.toJSONString(maps);
+        delivery.setAllowStationChange(jsonString);
+        adminFeign.update(delivery);
+    }
+
+    // 时间 状态 去哪里的路程 转成map,可以增加 存进list
+    // 这里是可以添加
+    public void addDeliveryAddress(String status,ExpressDelivery delivery,String where){
+        if (!DeliveryIsDisable(delivery)){
+            throw new LeadNewsException(233,"快递单号不能修改");
+        }
+
+        //包裹着map的list json
+        String deliveryMessage = delivery.getDeliveryMessage();
+        List<Map> maps = new ArrayList<>();
+        if (deliveryMessage.equals("")){
+            maps = JsonUtils.toList(deliveryMessage, Map.class);
+        }
+        Date date1 = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        String format1 = format.format(date1);
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("date",format1);
+        hashMap.put("status",status);
+        hashMap.put("where",where);
+
+        maps.add(hashMap);
+        String s = JSON.toJSONString(maps);
+        delivery.setDeliveryMessage(s);
+        adminFeign.update(delivery);
+    }
+
+    public boolean DeliveryIsDisable(ExpressDelivery delivery) {
+        String json = delivery.getExpressNotes();
+        Map map = JSON.parseObject(json, Map.class);
+        if (map.get("text").equals("9")){
+            return false;
+        }
+        return true;
     }
 }

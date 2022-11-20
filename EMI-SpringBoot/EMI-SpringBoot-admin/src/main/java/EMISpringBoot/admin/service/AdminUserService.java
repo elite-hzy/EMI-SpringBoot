@@ -10,5 +10,7 @@ import java.util.Map;
 public interface AdminUserService extends IService<AdminUser> {
     Result<Map<String, Object>> login(AdminUser user);
 
-    Result adminSubmitDelivery(Integer id, Integer uid,Integer adminId);
+    Result adminSubmitDelivery(Integer id, Integer deliveryId);
+
+    Result adminCancel(String request, Integer uid);
 }
