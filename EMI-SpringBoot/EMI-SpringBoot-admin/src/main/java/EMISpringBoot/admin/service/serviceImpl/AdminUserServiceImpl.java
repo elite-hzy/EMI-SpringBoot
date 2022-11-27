@@ -14,12 +14,12 @@ import EMISpringBoot.utils.ThreadLocalUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -80,17 +80,11 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         }
 
     }
+
 /*
-    id是判快递员是否同意揽件
+    id是判快递员是否同意揽件 1同意 9拒绝
     断和ExpressDeliveryId(生成订单号)
  */
-
-    /**
-     *
-     * @param id
-     * @param ExpressDeliveryId
-     * @return
-     */
     @Override
     public Result adminSubmitDelivery(Integer id, Integer ExpressDeliveryId) {
         //首先判断管理员有没有判断权限
@@ -132,9 +126,8 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             map.put("message", "已拒绝");
         }
         String s = JSONObject.toJSONString(map);
-        System.out.println("s = " + s);
         record.setExpressNotes(s);
-        record.setDeliveryMessage(s);
+        record  = addDeliveryAddress("已揽收", record, "快递员已揽收");
         adminFeign.update(record);
         return Result.ok();
     }
@@ -192,7 +185,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
     //快递单号添加-快递员所属的站点编号(添加或修改)
     //编号 :"" ,"disabled":"flase"
     //实际传肯定要有个数据表单实体类,返回值可以是一个快递信息的实体类
-    public void addAuthCheckPosition(Integer deliveryId, boolean disabled, ExpressDelivery delivery) {
+    public ExpressDelivery addAuthCheckPosition(Integer deliveryId, boolean disabled, ExpressDelivery delivery) {
         if (!DeliveryIsDisable(delivery)){
             throw new LeadNewsException(233,"快递单号不能修改");
         }
@@ -221,34 +214,35 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         maps.add(map);
         String jsonString = JSON.toJSONString(maps);
         delivery.setAllowStationChange(jsonString);
-        adminFeign.update(delivery);
+        return delivery;
     }
 
     // 时间 状态 去哪里的路程 转成map,可以增加 存进list
     // 这里是可以添加
-    public void addDeliveryAddress(String status,ExpressDelivery delivery,String where){
+    public ExpressDelivery addDeliveryAddress(String status,ExpressDelivery delivery,String where){
+        //先校验有没有这个订单号的管理权限
         if (!DeliveryIsDisable(delivery)){
             throw new LeadNewsException(233,"快递单号不能修改");
         }
-
         //包裹着map的list json
         String deliveryMessage = delivery.getDeliveryMessage();
         List<Map> maps = new ArrayList<>();
-        if (deliveryMessage.equals("")){
+        if (StringUtils.isNotEmpty(deliveryMessage)){
             maps = JsonUtils.toList(deliveryMessage, Map.class);
         }
+        System.out.println("maps 修改前 = " + maps);
         Date date1 = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format1 = format.format(date1);
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("date",format1);
         hashMap.put("status",status);
         hashMap.put("where",where);
-
         maps.add(hashMap);
+        System.out.println("maps 修改后 = " + maps);
         String s = JSON.toJSONString(maps);
         delivery.setDeliveryMessage(s);
-        adminFeign.update(delivery);
+        return delivery;
     }
 
     public boolean DeliveryIsDisable(ExpressDelivery delivery) {

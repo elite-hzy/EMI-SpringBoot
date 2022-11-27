@@ -15,7 +15,7 @@ public interface AdminFeign {
      * @return
      */
 
-    //用户提交订单消息
+    //管理员添加订单消息
     @PostMapping("/save")
     public Result<ExpressDelivery> save(@RequestBody ExpressDelivery record);
 
@@ -23,7 +23,7 @@ public interface AdminFeign {
     @PutMapping("/update")
     public Result update(@RequestBody ExpressDelivery record);
 
-    //获取整个用户
+    //获取整个订单号
     @GetMapping("/one/{id}")
     public Result findOne(@PathVariable("id")Integer id);
 }

@@ -66,7 +66,9 @@ public class ExpressDelivery implements Serializable {
      */
     @TableField("addressee")
     private Integer addressee;
-
+    /*
+    备注信息
+     */
     @TableField("express_notes")
     private String expressNotes;
 

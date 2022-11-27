@@ -1,12 +1,15 @@
 package EMISpringBoot.user.service.impl;
 
+import EMISpringBoot.admin.feign.AdminFeign;
 import EMISpringBoot.common.dtos.Result;
 import EMISpringBoot.common.exception.AppHttpCodeEnum;
 import EMISpringBoot.common.exception.LeadNewsException;
 import EMISpringBoot.model.admin.pojos.AdminUser;
+import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.model.user.pojos.CustomerUser;
 import EMISpringBoot.user.mapper.CustomerUserMapper;
 import EMISpringBoot.user.service.CustomerUserService;
+import EMISpringBoot.utils.ThreadLocalUtils;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -14,13 +17,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * <p>
@@ -31,7 +34,10 @@ import java.util.Map;
  * @since 2022-11-10
  */
 @Service
+@Transactional
 public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, CustomerUser> implements CustomerUserService {
+    @Autowired
+    private AdminFeign adminFeign;
 
     @Override
     public Result<Map<String, Object>> login(CustomerUser user) {
@@ -79,5 +85,25 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Result submit(ExpressDelivery expressDelivery) {
+        CustomerUser customerUser = (CustomerUser) ThreadLocalUtils.get();
+        HashMap<String, String> hashMap = new HashMap<>();
+        Date date1 = new Date();
+        List<Map> list1=new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = format.format(date1);
+        hashMap.put("where","null");
+        hashMap.put("status","用户申请寄件");
+        hashMap.put("date",format1);
+        list1.add(hashMap);
+        expressDelivery.setDeliveryMessage(JSON.toJSONString(list1));
+        expressDelivery.setAddressee(customerUser.getUserid());
+        //这里要通知下管理员
+        adminFeign.save(expressDelivery);
+        ThreadLocalUtils.remove();
+        return Result.ok();
     }
 }

@@ -4,6 +4,7 @@ package EMISpringBoot.user.controller;
 
 import EMISpringBoot.common.dtos.Result;
 import EMISpringBoot.model.admin.pojos.AdminUser;
+import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.model.user.pojos.CustomerUser;
 import EMISpringBoot.user.service.CustomerUserService;
 import EMISpringBoot.common.controller.AbstractController;
@@ -52,6 +53,12 @@ public class CustomerUserController extends AbstractController<CustomerUser> {
     @PostMapping("/login")
     public Result<Map<String,Object>> UserLogin(@RequestBody CustomerUser user){
         return customerUserService.login(user);
+    }
+
+    //用户进行发货
+    @PostMapping("/submit")
+    public Result submit(@RequestBody ExpressDelivery expressDelivery){
+        return customerUserService.submit(expressDelivery);
     }
 }
 

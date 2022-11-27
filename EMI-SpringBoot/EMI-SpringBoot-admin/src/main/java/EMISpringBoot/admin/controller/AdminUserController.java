@@ -56,15 +56,14 @@ public class AdminUserController extends AbstractController<AdminUser> {
 //        Result<ExpressDelivery> save = adminFeign.save(record);
 //        System.out.println("save = " + save);
 //    }
-
+    //快递员揽收与否 传1或者9
     @PutMapping("/auth_access/{id}")
     public Result adminSubmitDelivery(@PathVariable("id") Integer id,Integer deliveryId){
         return adminUserService.adminSubmitDelivery(id,deliveryId);
     }
 
 
-    //强制关闭订单
-
+    //强制关闭订单(中途过程)
     /**
      * 订单编号 拒绝理由
      * @return

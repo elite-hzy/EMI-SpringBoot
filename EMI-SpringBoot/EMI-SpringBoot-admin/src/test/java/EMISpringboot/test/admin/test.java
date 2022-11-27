@@ -379,4 +379,12 @@ public class test {
             System.out.println("true");
         }
     }
+    //测试时间格式
+    @Test
+    public void test15(){
+        Date date1 = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        String format1 = format.format(date1);
+        System.out.println("format1 = " + format1);
+    }
 }
