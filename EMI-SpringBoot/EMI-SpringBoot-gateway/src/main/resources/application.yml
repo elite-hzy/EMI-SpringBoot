@@ -25,6 +25,7 @@ spring:
             - Path=/admin/**
           filters:
             - StripPrefix=1
+            - PrefixPath=/api
         # 订单编辑
         - id: expressDelivery
           uri: lb://EMISpringBoot-expressDelivery
@@ -32,6 +33,7 @@ spring:
             - Path=/expressDelivery/**
           filters:
             - StripPrefix= 1
+            - PrefixPath=/api
         # 用户登录
         - id: customerUser
           uri: lb://EMISpringBoot-CustomerUser
@@ -39,3 +41,4 @@ spring:
             - Path=/customerUser/**
           filters:
             - StripPrefix= 1
+            - PrefixPath=/api

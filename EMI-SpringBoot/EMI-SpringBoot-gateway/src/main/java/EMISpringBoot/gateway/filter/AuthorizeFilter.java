@@ -55,7 +55,9 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 //            System.out.println("body = " + body);
             String key = body.get("key", String.class);
             String status = body.get("status", String.class);
-            if (uri.contains("/admin")) {
+            System.out.println("status = " + status);
+            System.out.println("key = " + key);
+            if (uri.contains("/admin")||uri.contains("/expressDelivery")) {
                 if (!status.equals("admin")){
                     response.setStatusCode(HttpStatus.UNAUTHORIZED);
                     return response.setComplete();
@@ -70,7 +72,6 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
                 CustomerUser user = JSON.parseObject(key, CustomerUser.class);
                 request.mutate().header("UserId", user.getUserid().toString());
             }
-
             return chain.filter(exchange);
         } catch (Exception e) {
             System.out.println("签名错误");

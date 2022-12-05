@@ -31,8 +31,8 @@ public class CustomerUser implements Serializable {
     @TableField("name")
     private String name;
 
-    @TableField("phone")
-    private String phone;
+    @TableField("account")
+    private String account;
 
     @TableField("gender")
     private String gender;

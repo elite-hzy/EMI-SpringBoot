@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/adminUser")
 public class AdminUserController extends AbstractController<AdminUser> {
     private AdminUserService adminUserService;
 

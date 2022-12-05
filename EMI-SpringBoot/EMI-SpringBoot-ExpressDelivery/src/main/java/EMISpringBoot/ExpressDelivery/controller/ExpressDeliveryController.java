@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 * @since 2022-11-10
 */
 @RestController
-@RequestMapping("/api/expressDelivery")
+@RequestMapping("/api/express")
 public class ExpressDeliveryController extends AbstractController<ExpressDelivery>{
 
     private ExpressDeliveryService expressDeliveryService;

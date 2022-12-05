@@ -24,7 +24,7 @@ import java.util.Map;
 * @since 2022-11-10
 */
 @RestController
-@RequestMapping("/api/customerUser")
+@RequestMapping("/api/user")
 public class CustomerUserController extends AbstractController<CustomerUser> {
 
     private CustomerUserService customerUserService;
@@ -48,7 +48,6 @@ public class CustomerUserController extends AbstractController<CustomerUser> {
 //        }
 //        return Result.ok(adminUser);
     }
-
     //登录方法
     @PostMapping("/login")
     public Result<Map<String,Object>> UserLogin(@RequestBody CustomerUser user){

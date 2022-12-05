@@ -45,13 +45,13 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
         if (user == null) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
-        if (StringUtils.isEmpty(user.getName()) || StringUtils.isEmpty(user.getPassword())) {
+        if (StringUtils.isEmpty(user.getAccount()) || StringUtils.isEmpty(user.getPassword())) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
         //1.校验用户名和密码是否正确
         //这里找密码是通过名字来找用户
         QueryWrapper<CustomerUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", user.getName());
+        queryWrapper.eq("account", user.getAccount());
         CustomerUser customerUser = this.getOne(queryWrapper);
         //判断用户名
         if (customerUser == null) {
