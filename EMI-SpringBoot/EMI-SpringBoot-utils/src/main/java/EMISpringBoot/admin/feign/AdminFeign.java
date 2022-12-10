@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 //管理员的接口
-@FeignClient(name = "EMISpringBoot-expressDelivery",path = "/api/expressDelivery",contextId = "AdminFeign")
+@FeignClient(name = "EMISpringBoot-expressDelivery",path = "/api/express",contextId = "AdminFeign")
 public interface AdminFeign {
     /**
      * 添加作者
@@ -26,4 +26,8 @@ public interface AdminFeign {
     //获取整个订单号
     @GetMapping("/one/{id}")
     public Result findOne(@PathVariable("id")Integer id);
+
+    //根据id查找一个
+    @PostMapping("/findOne")
+    public Result longIdFindOne(@RequestParam("deliveryId")Long deliveryId);
 }

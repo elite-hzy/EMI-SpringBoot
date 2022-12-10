@@ -1,5 +1,5 @@
 server:
-  port: 9001
+  port: 29001
 spring:
   application:
     name: EMISpringBoot-admin

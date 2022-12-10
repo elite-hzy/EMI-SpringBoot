@@ -1,9 +1,11 @@
 package EMISpringBoot.model.expressDelivery.pojos;
 
+import EMISpringBoot.common.json.Long2StringSerializer;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,8 +28,10 @@ import java.io.Serializable;
 public class ExpressDelivery implements Serializable {
 
 
-    @TableId(value = "delivery_id", type = IdType.AUTO)
-    private Integer deliveryId;
+    @TableId(value = "delivery_id", type = IdType.ID_WORKER)
+    //自定义json序列化器
+    @JsonSerialize(using = Long2StringSerializer.class)
+    private Long deliveryId;
     /**
      * 快递单号
      */
@@ -58,14 +62,15 @@ public class ExpressDelivery implements Serializable {
     /**
      * 发件人id
      */
-    @TableField("sender")
-    private Integer sender;
+    @TableField("sender_name")
+    private String senderName;
 
     /**
      * 收件人id
      */
-    @TableField("addressee")
-    private Integer addressee;
+    @TableField("addressee_name")
+    private String addresseeName;
+
     /*
     备注信息
      */

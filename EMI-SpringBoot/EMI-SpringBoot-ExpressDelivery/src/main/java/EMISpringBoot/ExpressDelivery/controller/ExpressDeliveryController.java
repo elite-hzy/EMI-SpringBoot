@@ -2,12 +2,12 @@ package EMISpringBoot.ExpressDelivery.controller;
 
 
 import EMISpringBoot.ExpressDelivery.service.ExpressDeliveryService;
+import EMISpringBoot.common.dtos.Result;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.common.controller.AbstractController;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
 * <p>
@@ -27,7 +27,10 @@ public class ExpressDeliveryController extends AbstractController<ExpressDeliver
         super(expressDeliveryService);
         this.expressDeliveryService=expressDeliveryService;
     }
-
-
+    //根据id查找一个
+    @PostMapping("/findOne")
+    public Result longIdFindOne(@RequestParam("deliveryId")Long deliveryId){
+        return expressDeliveryService.longIdFindOne(deliveryId);
+    }
 }
 

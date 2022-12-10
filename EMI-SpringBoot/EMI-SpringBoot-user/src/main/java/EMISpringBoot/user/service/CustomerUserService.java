@@ -2,6 +2,7 @@ package EMISpringBoot.user.service;
 
 
 import EMISpringBoot.common.dtos.Result;
+import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.model.user.pojos.CustomerUser;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,4 +23,6 @@ public interface CustomerUserService extends IService<CustomerUser> {
     Result<Map<String, Object>> login(CustomerUser user);
 
     Result submit(ExpressDelivery expressDelivery);
+
+    Result UserFindDelivery(ExpressDeliveryConfigDto dto);
 }

@@ -6,6 +6,7 @@ import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.admin.service.AdminUserService;
 import EMISpringBoot.common.controller.AbstractController;
 
+import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,25 +52,38 @@ public class AdminUserController extends AbstractController<AdminUser> {
         return adminUserService.login(user);
     }
 
-//    @PostMapping("/test")
+    //    @PostMapping("/test")
 //    public void simpleTest(@RequestBody ExpressDelivery record) {
 //        Result<ExpressDelivery> save = adminFeign.save(record);
 //        System.out.println("save = " + save);
 //    }
     //快递员揽收与否 传1或者9
     @PutMapping("/auth_access/{id}")
-    public Result adminSubmitDelivery(@PathVariable("id") Integer id,Integer deliveryId){
-        return adminUserService.adminSubmitDelivery(id,deliveryId);
+    public Result adminSubmitDelivery(@PathVariable("id") Integer id, Long deliveryId) {
+        return adminUserService.adminSubmitDelivery(id, deliveryId);
     }
 
 
     //强制关闭订单(中途过程)
+
     /**
      * 订单编号 拒绝理由
+     *
      * @return
      */
     @PutMapping("/auth_cancel")
-    public Result adminCancel(String request,Integer ExpressDeliveryId){
-        return adminUserService.adminCancel(request,ExpressDeliveryId);
+    public Result adminCancel(String request, Integer ExpressDeliveryId) {
+        return adminUserService.adminCancel(request, ExpressDeliveryId);
     }
+
+    //管理员随便查快递列表
+    @PostMapping("/adminFindExpress")
+    public Result adminFindExpress(@RequestBody ExpressDeliveryConfigDto dto) {
+        return  adminUserService.adminFindExpress(dto);
+    }
+    @GetMapping("/selectInf")
+    public Result selectInf(){
+        return adminUserService.selectInf();
+    }
+
 }
