@@ -10,6 +10,7 @@ import EMISpringBoot.common.utils.JsonUtils;
 import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.admin.mapper.AdminUserMapper;
 
+import EMISpringBoot.model.expressDelivery.ExpressDeliveryChangeDto;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDeliveryConfig;
@@ -68,7 +69,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             Map<String, Object> map = new Hashtable<>();
             map.put("key", userJson);
             map.put("status", "admin");
-            map.put("username","admin");
+            map.put("username", "admin");
             String token = jwtBuilder.setSubject("hello") //设置用户数据
                     .setIssuedAt(new Date()) //设置jwt生成时间
                     .setId("1") //设置id为token id
@@ -113,7 +114,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
         deliveryConfig.setCreateTime(new Date());
         System.out.println("deliveryConfig = " + deliveryConfig);
-        if (record==null||deliveryConfig==null){
+        if (record == null || deliveryConfig == null) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
 
@@ -174,6 +175,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         return Result.ok();
     }
 
+    //管理员查找快递
     @Override
     public Result adminFindExpress(ExpressDeliveryConfigDto dto) {
         AdminUser adminUser = (AdminUser) ThreadLocalUtils.get();
@@ -189,6 +191,66 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         //已送达数量: 111 异常数量: 111
 
         return null;
+    }
+
+    //修改订单状态码信息
+    //状态码
+    //0拒绝接单
+    //1确认接单 ->等待揽收
+    //2站点收入
+    //3运往下一个站点
+    //4 快递异常
+    //5 派件
+    //6 签收
+    @Override
+    public Result changeExpress(ExpressDeliveryChangeDto dto) {
+        System.out.println("dto = " + dto);
+        //首先判断管理员有没有判断权限
+        AdminUser adminUser = (AdminUser) ThreadLocalUtils.get();
+        if (adminUser == null) {
+            throw new LeadNewsException(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        try {
+            Long expressId = dto.getExpressId();
+            Object data = adminFeign.longIdFindOne(expressId).getData();
+            String statusPosition = "";
+            switch (dto.getStatus()) {
+                case 1:
+                    statusPosition = "快递员确认接单";
+                    break;
+                case 2:
+                    statusPosition = "站点收件";
+                    break;
+                case 3:
+                    statusPosition = "运往下一个站点";
+                    break;
+                case 4:
+                    statusPosition = "快递状态异常";
+                    break;
+                case 5:
+                    statusPosition = "派件中";
+                    break;
+                case 6:
+                    statusPosition = "已签收";
+                    break;
+            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
+
+            Object data1 = expressDeliveryFeign.longIdFindOne(dto.getExpressId()).getData();
+            ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
+            deliveryConfig.setCreateTime(new Date());
+            deliveryConfig.setStatus(statusPosition);
+            ExpressDelivery delivery = addDeliveryAddress(statusPosition, record, dto.getLocation());
+            adminFeign.update(delivery);
+            expressDeliveryFeign.update(deliveryConfig);
+            return Result.ok();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+
+        }
     }
 
 
