@@ -34,8 +34,6 @@ public class CustomerUser implements Serializable {
     @TableField("account")
     private String account;
 
-    @TableField("gender")
-    private String gender;
 
     @TableField("password")
     private String password;

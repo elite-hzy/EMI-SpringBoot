@@ -3,6 +3,7 @@ package EMISpringBoot.user.service.impl;
 import EMISpringBoot.ExpressDelivery.feign.ExpressDeliveryFeign;
 import EMISpringBoot.admin.feign.AdminFeign;
 import EMISpringBoot.common.dtos.Result;
+import EMISpringBoot.common.dtos.StatusCode;
 import EMISpringBoot.common.exception.AppHttpCodeEnum;
 import EMISpringBoot.common.exception.LeadNewsException;
 import EMISpringBoot.common.utils.BeanHelper;
@@ -50,6 +51,7 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
         //先判断有没有传入用户内容
         if (user == null) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
+//            return Result.ok();
         }
         if (StringUtils.isEmpty(user.getAccount()) || StringUtils.isEmpty(user.getPassword())) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
@@ -61,7 +63,16 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
         CustomerUser customerUser = this.getOne(queryWrapper);
         //判断用户名
         if (customerUser == null) {
-            throw new LeadNewsException(AppHttpCodeEnum.AP_USER_DATA_NOT_EXIST);//用户不存在
+            //新建一个用户
+            CustomerUser NewUser = new CustomerUser();
+            String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+            NewUser.setPassword(password);
+            NewUser.setAccount(user.getAccount());
+            NewUser.setName("用户"+user.getAccount());
+            save(NewUser);
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("没有查到用户","自动注册");
+            return Result.ok(hashMap);
         }
         //判断密码,这里用md5来判断
         if (!customerUser.getPassword().equals(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()))) {
