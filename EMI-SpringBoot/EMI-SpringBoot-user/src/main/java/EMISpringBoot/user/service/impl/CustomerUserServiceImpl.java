@@ -110,11 +110,13 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
     @Override
     public Result submit(ExpressDelivery expressDelivery) {
         CustomerUser customerUser = (CustomerUser) ThreadLocalUtils.get();
+        System.out.println("customerUser = " + customerUser);
         if (customerUser == null) {
             throw new LeadNewsException(AppHttpCodeEnum.NEED_LOGIN);
         }
         try {
             CustomerUser user = getById(customerUser.getUserid());
+            System.out.println("user = " + user);
             HashMap<String, String> hashMap = new HashMap<>();
             Date date1 = new Date();
             List<Map> list1 = new ArrayList<>();
@@ -132,18 +134,21 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
             expressDelivery = adminFeign.save(expressDelivery).getData();
             //建立新的
             ExpressDeliveryConfig expressDeliveryConfig = new ExpressDeliveryConfig();
+            expressDeliveryConfig.setAddresseePhone(expressDelivery.getAddresseePhone());
+            expressDeliveryConfig.setSenderPhone(expressDelivery.getSenderPhone());
             expressDeliveryConfig.setExpressId(expressDelivery.getDeliveryId());
             expressDeliveryConfig.setStatus("1");
-            expressDeliveryConfig.setAddressee(user.getUserid());
+            //传入寄件人的id
+            expressDeliveryConfig.setSender(user.getUserid());
             expressDeliveryConfig.setCreateTime(new Date());
             expressDeliveryConfig.setAddresseeName(expressDelivery.getAddresseeName());
             expressDeliveryConfig.setSenderName(expressDelivery.getSenderName());
-            //这里先查询有没有这个用户,如果有这个用户就传
+            //这里先查询有没有这个用户的手机号,如果有这个用户就传
             QueryWrapper<CustomerUser> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("name", expressDelivery.getAddresseeName());
-            CustomerUser sender = getOne(queryWrapper);
-            if (sender != null) {
-                expressDeliveryConfig.setSender(sender.getUserid());
+            queryWrapper.eq("account", expressDelivery.getAddresseePhone());
+            CustomerUser address = getOne(queryWrapper);
+            if (address != null) {
+                expressDeliveryConfig.setAddressee(address.getUserid());
             }
             expressDeliveryFeign.save(expressDeliveryConfig);
             return Result.ok();

@@ -63,6 +63,7 @@ public class CustomerUserController extends AbstractController<CustomerUser> {
     //根据用户id来查询相关信息,一次查10条,
     @PostMapping("/userGetById")
     public Result UserFindDelivery(@RequestBody ExpressDeliveryConfigDto dto) {
+        System.out.println("ExpressDeliveryConfigDto = " + dto);
         return customerUserService.UserFindDelivery(dto);
     }
 }

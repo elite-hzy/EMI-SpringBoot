@@ -69,5 +69,16 @@ public class ExpressDeliveryConfig implements Serializable {
     @TableField("create_time")
     private Date createTime;
 
+    /**
+     * 收件人手机号
+     */
+    @TableField("addressee_phone")
+    private String addresseePhone;
+
+    /*
+        寄件人手机号
+     */
+    @TableField("sender_phone")
+    private String senderPhone;
 
 }

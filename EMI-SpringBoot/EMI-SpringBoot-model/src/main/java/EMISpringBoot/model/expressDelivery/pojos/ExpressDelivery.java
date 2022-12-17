@@ -76,6 +76,17 @@ public class ExpressDelivery implements Serializable {
      */
     @TableField("express_notes")
     private String expressNotes;
+    /**
+     * 收件人手机号
+     */
+    @TableField("addressee_phone")
+    private String addresseePhone;
+
+    /*
+        寄件人手机号
+     */
+    @TableField("sender_phone")
+    private String senderPhone;
 
 
 }

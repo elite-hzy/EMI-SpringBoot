@@ -7,8 +7,22 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
+#    password: root
     password: hzyNB@@
     url: jdbc:mariadb://1.12.75.55:3306/EMI-express-delivery?characterEncoding=utf-8&useSSL=false&useTimezone=true
+#    url: jdbc:mariadb://192.168.66.133:3306/EMI-express-delivery?characterEncoding=utf-8&useSSL=false&useTimezone=true
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 30000
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,config
   cloud:
     nacos:
       discovery:

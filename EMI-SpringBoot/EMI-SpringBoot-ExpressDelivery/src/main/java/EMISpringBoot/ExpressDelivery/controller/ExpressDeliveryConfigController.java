@@ -33,6 +33,7 @@ public class ExpressDeliveryConfigController extends AbstractController<ExpressD
     //根据用户id来查询相关信息,一次查10条,
     @PostMapping("/userGetById")
     public Result UserFindDelivery(@RequestBody ExpressDeliveryConfigDtoUser dto){
+        System.out.println("dto = " + dto);
         return expressDeliveryConfigService.UserFindDelivery(dto);
     }
     //管理员随便查
