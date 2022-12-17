@@ -10,7 +10,7 @@ spring:
     username: root
 #    password: root
     password: hzyNB@@
-    url: jdbc:mysql://1.12.75.55:3306/EMI-admin?characterEncoding=utf-8&useSSL=false&useTimezone=true
+    url: jdbc:mysql://1.12.75.55:3306/EMI-admin?characterEncoding=utf-8&useSSL=false&useTimezone=Asia/Shanghai
     initialSize: 10
     minIdle: 10
     maxActive: 20

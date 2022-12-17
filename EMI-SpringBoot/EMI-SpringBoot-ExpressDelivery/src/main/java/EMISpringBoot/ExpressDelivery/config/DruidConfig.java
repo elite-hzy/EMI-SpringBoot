@@ -78,7 +78,7 @@ public class DruidConfig {
         datasource.setUsername(username);
         datasource.setPassword(password);
         datasource.setDriverClassName(driverClassName);
-
+        datasource.setValidationQuery("select 'X'");
         //configuration
         datasource.setInitialSize(initialSize);
         datasource.setMinIdle(minIdle);
