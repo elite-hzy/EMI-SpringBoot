@@ -4,12 +4,12 @@ spring:
   application:
     name: EMISpringBoot-CustomerUser
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
 #    password: root
     password: hzyNB@@
-    url: jdbc:mariadb://1.12.75.55:3306/EMI-user?characterEncoding=utf-8&useSSL=false&useTimezone=true
+    url: jdbc:mysql://1.12.75.55:3306/EMI-user?characterEncoding=utf-8&useSSL=false&useTimezone=true
 #    url: jdbc:mariadb://192.168.66.133:3306/EMI-user?characterEncoding=utf-8&useSSL=false&useTimezone=true
 #    initialSize: 5
 #    minIdle: 5
@@ -25,11 +25,11 @@ spring:
 #    filters: stat,config
     druid:
       #  初始连接数
-      initialSize: 5
+      initialSize: 10
       # 最小空闲连接数
-      minIdle: 5
+      minIdle: 10
       # 最大连接数
-      maxActive: 20
+      maxActive: 30
       # 超时等待时间以毫秒为单位
       maxWait: 60000
       # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒

@@ -4,14 +4,15 @@ spring:
   application:
     name: EMISpringBoot-admin
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
+#    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
 #    password: root
     password: hzyNB@@
-    url: jdbc:mariadb://1.12.75.55:3306/EMI-admin?characterEncoding=utf-8&useSSL=false&useTimezone=true
-    initialSize: 5
-    minIdle: 5
+    url: jdbc:mysql://1.12.75.55:3306/EMI-admin?characterEncoding=utf-8&useSSL=false&useTimezone=true
+    initialSize: 10
+    minIdle: 10
     maxActive: 20
     maxWait: 60000
     timeBetweenEvictionRunsMillis: 60000
