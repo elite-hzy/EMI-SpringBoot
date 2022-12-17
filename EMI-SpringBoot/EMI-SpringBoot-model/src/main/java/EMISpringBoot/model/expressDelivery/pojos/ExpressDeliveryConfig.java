@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -47,7 +48,7 @@ public class ExpressDeliveryConfig implements Serializable {
     private String addresseeName;
     //更新时间
     @TableField("create_time")
-    private Date createTime;
+    private LocalDate createTime;
     //收件人手机号
     @TableField("addressee_phone")
     private String addresseePhone;

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -112,7 +113,8 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         System.out.println("record = " + record);
         Object data1 = expressDeliveryFeign.longIdFindOne(ExpressDeliveryId).getData();
         ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
-        deliveryConfig.setCreateTime(new Date());
+//        deliveryConfig.setCreateTime(new Date());
+        deliveryConfig.setCreateTime(LocalDate.now());
         System.out.println("deliveryConfig = " + deliveryConfig);
         if (record == null || deliveryConfig == null) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
@@ -239,7 +241,8 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
 
             Object data1 = expressDeliveryFeign.longIdFindOne(dto.getExpressId()).getData();
             ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
-            deliveryConfig.setCreateTime(new Date());
+//            deliveryConfig.setCreateTime(new Date());
+            deliveryConfig.setCreateTime(LocalDate.now());
             deliveryConfig.setStatus(statusPosition);
             ExpressDelivery delivery = addDeliveryAddress(statusPosition, record, dto.getLocation());
             adminFeign.update(delivery);

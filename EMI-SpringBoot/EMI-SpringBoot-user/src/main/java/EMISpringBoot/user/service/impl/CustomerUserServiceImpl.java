@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -140,7 +141,9 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
             expressDeliveryConfig.setStatus("1");
             //传入寄件人的id
             expressDeliveryConfig.setSender(user.getUserid());
-            expressDeliveryConfig.setCreateTime(new Date());
+            expressDeliveryConfig.setCreateTime(LocalDate.now());
+//            expressDeliveryConfig.setCreateTime(new Date());
+
             expressDeliveryConfig.setAddresseeName(expressDelivery.getAddresseeName());
             expressDeliveryConfig.setSenderName(expressDelivery.getSenderName());
             //这里先查询有没有这个用户的手机号,如果有这个用户就传
