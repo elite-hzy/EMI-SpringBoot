@@ -17,8 +17,8 @@ public class AdminUser {
     //实体类用小驼峰,数据库用下划线
     @TableId(value = "user_id",type = IdType.AUTO)
     private Integer userId;
-    @TableField("name")
-    private String  name;
+    @TableField("account")
+    private String  account;
     //0总管理员, 1为管理员 2为普通快递员
     @TableField("level")
     private Integer  level;
