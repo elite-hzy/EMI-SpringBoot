@@ -59,6 +59,11 @@ public class ExpressDelivery implements Serializable {
     //寄件人手机号
     @TableField("sender_phone")
     private String senderPhone;
-
+    //寄件人地址
+    @TableField("sender_address")
+    private String senderAddress;
+    //收件人地址
+    @TableField("addressee_address")
+    private String addresseeAddress;
 
 }

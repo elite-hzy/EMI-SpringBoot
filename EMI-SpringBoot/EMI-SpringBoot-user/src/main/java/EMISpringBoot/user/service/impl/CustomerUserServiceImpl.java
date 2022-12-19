@@ -1,6 +1,8 @@
 package EMISpringBoot.user.service.impl;
 
+
 import EMISpringBoot.ExpressDelivery.feign.ExpressDeliveryFeign;
+
 import EMISpringBoot.admin.feign.AdminFeign;
 import EMISpringBoot.common.dtos.Result;
 import EMISpringBoot.common.dtos.StatusCode;
@@ -132,7 +134,7 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
             list1.add(hashMap);
             expressDelivery.setDeliveryMessage(JSON.toJSONString(list1));
             //这里要通知下管理员
-            expressDelivery = adminFeign.save(expressDelivery).getData();
+            expressDelivery= adminFeign.save(expressDelivery).getData();
             //建立新的
             ExpressDeliveryConfig expressDeliveryConfig = new ExpressDeliveryConfig();
             expressDeliveryConfig.setAddresseePhone(expressDelivery.getAddresseePhone());
@@ -153,6 +155,7 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
             if (address != null) {
                 expressDeliveryConfig.setAddressee(address.getUserid());
             }
+            System.out.println("expressDeliveryConfig = " + expressDeliveryConfig);
             expressDeliveryFeign.save(expressDeliveryConfig);
             return Result.ok();
         } catch (Exception e) {
