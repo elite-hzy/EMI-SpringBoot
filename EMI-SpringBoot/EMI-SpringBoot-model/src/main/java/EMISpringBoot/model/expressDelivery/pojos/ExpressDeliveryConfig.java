@@ -1,10 +1,12 @@
 package EMISpringBoot.model.expressDelivery.pojos;
 
+import EMISpringBoot.common.json.Long2StringSerializer;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -31,6 +33,7 @@ public class ExpressDeliveryConfig implements Serializable {
     private Integer configId;
     //绑定的主表id(运单号:)
     @TableField("express_id")
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long expressId;
     //快递状态
     @TableField("status")

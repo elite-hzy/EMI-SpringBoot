@@ -1,10 +1,8 @@
 package EMISpringboot.test.admin;
 
-import EMISpringBoot.admin.adminApplication;
 import EMISpringBoot.admin.feign.AdminFeign;
 import EMISpringBoot.admin.service.AdminUserService;
-import EMISpringBoot.admin.service.serviceImpl.AdminUserServiceImpl;
-import EMISpringBoot.common.utils.JsonUtils;
+import EMISpringBoot.utils.JsonUtils;
 import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import com.alibaba.fastjson.JSON;
@@ -16,20 +14,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.test.context.junit4.SpringRunner;
-import springfox.documentation.spring.web.json.Json;
-
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 //@RunWith(SpringRunner.class)

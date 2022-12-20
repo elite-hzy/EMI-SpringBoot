@@ -1,14 +1,13 @@
 package EMISpringBoot.model.expressDelivery.pojos;
 
+
 import EMISpringBoot.common.json.Long2StringSerializer;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -33,7 +32,7 @@ public class ExpressDelivery implements Serializable {
     //自定义json序列化器
     //快递单号id
     @TableId(value = "delivery_id", type = IdType.ID_WORKER)
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long deliveryId;
     //允许操作的部门(json)
     @TableField("allow_station_change")

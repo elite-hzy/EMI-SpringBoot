@@ -1,4 +1,4 @@
-package EMISpringBoot.common.utils;
+package EMISpringBoot.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
