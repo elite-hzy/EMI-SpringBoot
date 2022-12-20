@@ -12,6 +12,7 @@ import EMISpringBoot.admin.mapper.AdminUserMapper;
 
 import EMISpringBoot.model.expressDelivery.ExpressDeliveryChangeDto;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
+import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDeliveryConfig;
 import EMISpringBoot.utils.ThreadLocalUtils;
@@ -114,7 +115,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         Object data1 = expressDeliveryFeign.longIdFindOne(ExpressDeliveryId).getData();
         ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
 //        deliveryConfig.setCreateTime(new Date());
-        deliveryConfig.setCreateTime(LocalDate.now());
+        deliveryConfig.setCreateTime(new Date());
         System.out.println("deliveryConfig = " + deliveryConfig);
         if (record == null || deliveryConfig == null) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
@@ -206,7 +207,6 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
     //6 签收
     @Override
     public Result changeExpress(ExpressDeliveryChangeDto dto) {
-        System.out.println("dto = " + dto);
         //首先判断管理员有没有判断权限
         AdminUser adminUser = (AdminUser) ThreadLocalUtils.get();
         if (adminUser == null) {
@@ -242,9 +242,13 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             Object data1 = expressDeliveryFeign.longIdFindOne(dto.getExpressId()).getData();
             ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
 //            deliveryConfig.setCreateTime(new Date());
-            deliveryConfig.setCreateTime(LocalDate.now());
+            deliveryConfig.setCreateTime(new Date());
             deliveryConfig.setStatus(statusPosition);
             ExpressDelivery delivery = addDeliveryAddress(statusPosition, record, dto.getLocation());
+            System.out.println("delivery = " + delivery);
+            System.out.println("deliveryConfig = " + deliveryConfig);
+            delivery.setExpressNotes("1");
+            delivery.setAllowStationChange("");
             adminFeign.update(delivery);
             expressDeliveryFeign.update(deliveryConfig);
             return Result.ok();
@@ -252,8 +256,16 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
-
+            ThreadLocalUtils.remove();
         }
+    }
+
+    @Override
+    public Result checkOneById(ExpressDeliveryDto dto) {
+        Object data = adminFeign.longIdFindOne(dto.getExpressId()).getData();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
+        return Result.ok(record);
     }
 
 
@@ -318,9 +330,9 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
     // 这里是可以添加
     public ExpressDelivery addDeliveryAddress(String status, ExpressDelivery delivery, String where) {
         //先校验有没有这个订单号的管理权限
-        if (!DeliveryIsDisable(delivery)) {
-            throw new LeadNewsException(233, "快递单号不能修改");
-        }
+//        if (!DeliveryIsDisable(delivery)) {
+//            throw new LeadNewsException(233, "快递单号不能修改");
+//        }
         //包裹着map的list json
         String deliveryMessage = delivery.getDeliveryMessage();
         List<Map> maps = new ArrayList<>();

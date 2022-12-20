@@ -12,6 +12,7 @@ import EMISpringBoot.common.utils.BeanHelper;
 import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDtoUser;
+import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDeliveryConfig;
 import EMISpringBoot.model.user.pojos.CustomerUser;
@@ -22,6 +23,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -143,7 +145,7 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
             expressDeliveryConfig.setStatus("1");
             //传入寄件人的id
             expressDeliveryConfig.setSender(user.getUserid());
-            expressDeliveryConfig.setCreateTime(LocalDate.now());
+            expressDeliveryConfig.setCreateTime(new Date());
 //            expressDeliveryConfig.setCreateTime(new Date());
 
             expressDeliveryConfig.setAddresseeName(expressDelivery.getAddresseeName());
@@ -175,5 +177,13 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
         ExpressDeliveryConfigDtoUser user = BeanHelper.copyProperties(dto, ExpressDeliveryConfigDtoUser.class);
         user.setCustomerUserId(customerUser.getUserid());
         return expressDeliveryFeign.UserFindDelivery(user);
+    }
+
+    @Override
+    public Result checkOneById(ExpressDeliveryDto dto) {
+        Object data = adminFeign.longIdFindOne(dto.getExpressId()).getData();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
+        return Result.ok(record);
     }
 }

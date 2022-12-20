@@ -4,6 +4,7 @@ package EMISpringBoot.user.controller;
 import EMISpringBoot.common.dtos.Result;
 import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
+import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import EMISpringBoot.model.user.pojos.CustomerUser;
 import EMISpringBoot.user.service.CustomerUserService;
@@ -65,6 +66,10 @@ public class CustomerUserController extends AbstractController<CustomerUser> {
     public Result UserFindDelivery(@RequestBody ExpressDeliveryConfigDto dto) {
         System.out.println("ExpressDeliveryConfigDto = " + dto);
         return customerUserService.UserFindDelivery(dto);
+    }
+    @PostMapping("/checkOneById")
+    public Result checkOneById(@RequestBody ExpressDeliveryDto dto){
+        return customerUserService.checkOneById(dto);
     }
 }
 

@@ -4,6 +4,7 @@ import EMISpringBoot.common.dtos.Result;
 import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.model.expressDelivery.ExpressDeliveryChangeDto;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
+import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -21,4 +22,7 @@ public interface AdminUserService extends IService<AdminUser> {
     Result selectInf();
 
     Result changeExpress(ExpressDeliveryChangeDto dto);
+
+    Result checkOneById(ExpressDeliveryDto dto);
+
 }

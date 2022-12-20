@@ -8,6 +8,7 @@ import EMISpringBoot.common.controller.AbstractController;
 
 import EMISpringBoot.model.expressDelivery.ExpressDeliveryChangeDto;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
+import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,11 @@ public class AdminUserController extends AbstractController<AdminUser> {
     public Result changeExpress(@RequestBody ExpressDeliveryChangeDto dto){
         System.out.println("dto = " + dto);
         return adminUserService.changeExpress(dto);
+    }
+
+    @PostMapping("/checkOneById")
+    public Result checkOneById(@RequestBody ExpressDeliveryDto dto){
+        return adminUserService.checkOneById(dto);
     }
 
 }
