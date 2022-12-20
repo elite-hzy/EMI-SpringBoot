@@ -95,7 +95,7 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
                     .setIssuedAt(new Date()) //设置jwt生成时间
                     .setId("1") //设置id为token id
                     .setClaims(map) //通过map传值
-                    .setExpiration(new Date(System.currentTimeMillis() + 5000000)) //设置token有效期
+                    .setExpiration(new Date(System.currentTimeMillis() + 999999999)) //设置token有效期
                     .signWith(SignatureAlgorithm.HS256, "qianfeng") //设置token加密方式和密码
                     .compact(); //生成token字符串
             //3.封装token和用户信息返回给前端
