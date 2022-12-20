@@ -23,6 +23,6 @@ public interface AdminUserService extends IService<AdminUser> {
 
     Result changeExpress(ExpressDeliveryChangeDto dto);
 
-    Result checkOneById(ExpressDeliveryDto dto);
+    Result<Map<String,Object>> checkOneById(ExpressDeliveryDto dto);
 
 }

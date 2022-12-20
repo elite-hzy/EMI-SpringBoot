@@ -15,6 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ExpressDeliveryService extends IService<ExpressDelivery> {
 
-    Result longIdFindOne(Long deliveryId);
+    Result<ExpressDelivery> longIdFindOne(Long deliveryId);
 
 }

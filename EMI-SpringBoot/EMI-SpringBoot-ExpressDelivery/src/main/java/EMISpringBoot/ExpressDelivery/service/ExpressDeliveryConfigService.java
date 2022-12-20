@@ -23,7 +23,7 @@ public interface ExpressDeliveryConfigService extends IService<ExpressDeliveryCo
 
     Result adminFindExpress(ExpressDeliveryConfigDto dto);
 
-    Result longIdFindOne(Long deliveryId);
+    Result<ExpressDeliveryConfig> longIdFindOne(Long deliveryId);
 
     Result selectInf();
 

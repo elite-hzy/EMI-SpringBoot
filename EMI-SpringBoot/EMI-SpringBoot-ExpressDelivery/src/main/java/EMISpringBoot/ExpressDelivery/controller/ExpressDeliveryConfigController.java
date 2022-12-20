@@ -42,7 +42,7 @@ public class ExpressDeliveryConfigController extends AbstractController<ExpressD
         return expressDeliveryConfigService.adminFindExpress(dto);
     }
     @PostMapping("/findOne")
-    public Result longIdFindOne(@RequestParam("deliveryId")Long deliveryId){
+    public Result<ExpressDeliveryConfig> longIdFindOne(@RequestParam("deliveryId")Long deliveryId){
         return expressDeliveryConfigService.longIdFindOne(deliveryId);
     }
     @GetMapping("/selectInf")

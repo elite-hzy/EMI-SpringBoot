@@ -72,7 +72,7 @@ public class ExpressDeliveryConfigServiceImpl extends ServiceImpl<ExpressDeliver
     }
 
     @Override
-    public Result longIdFindOne(Long deliveryId) {
+    public Result<ExpressDeliveryConfig> longIdFindOne(Long deliveryId) {
         QueryWrapper<ExpressDeliveryConfig> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("express_id", deliveryId);
         ExpressDeliveryConfig deliveryConfig = getOne(queryWrapper);

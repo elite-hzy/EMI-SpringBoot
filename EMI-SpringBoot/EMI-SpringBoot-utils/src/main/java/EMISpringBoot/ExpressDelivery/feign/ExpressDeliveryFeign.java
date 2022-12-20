@@ -20,7 +20,7 @@ public interface ExpressDeliveryFeign {
 
     //根据id来查询快递完整信息
     @PostMapping("/findOne")
-    public Result longIdFindOne(@RequestParam("deliveryId")Long deliveryId);
+    public Result<ExpressDeliveryConfig> longIdFindOne(@RequestParam("deliveryId")Long deliveryId);
 
     //修改快递配置表
     @PutMapping("/update")

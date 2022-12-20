@@ -107,12 +107,8 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
         //这里可以直接把json转为实体类
-        ObjectMapper objectMapper = new ObjectMapper();
-        Object data = adminFeign.longIdFindOne(ExpressDeliveryId).getData();
-        ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
-        System.out.println("record = " + record);
-        Object data1 = expressDeliveryFeign.longIdFindOne(ExpressDeliveryId).getData();
-        ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
+        ExpressDelivery record = adminFeign.longIdFindOne(ExpressDeliveryId).getData();
+        ExpressDeliveryConfig deliveryConfig = expressDeliveryFeign.longIdFindOne(ExpressDeliveryId).getData();
         deliveryConfig.setCreateTime(new Date());
         System.out.println("deliveryConfig = " + deliveryConfig);
         if (record == null || deliveryConfig == null) {
@@ -144,7 +140,11 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         expressDeliveryFeign.update(deliveryConfig);
         String s = JSONObject.toJSONString(map);
         record.setExpressNotes(s);
-        record = addDeliveryAddress("已揽收", record, "快递员已揽收");
+        if (id == 1) {
+            record = addDeliveryAddress("已揽收", record, "快递员已揽收");
+        }else if (id==9){
+            record = addDeliveryAddress("拒收", record, "快递员拒绝");
+        }
         adminFeign.update(record);
         return Result.ok();
     }
@@ -158,8 +158,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         }
         Integer userId = adminUser.getUserId();
         AdminUser user = this.getById(userId);
-        ObjectMapper objectMapper = new ObjectMapper();
-        ExpressDelivery delivery = objectMapper.convertValue(adminFeign.findOne(ExpressDeliveryId).getData(), ExpressDelivery.class);
+        ExpressDelivery delivery = adminFeign.findOne(ExpressDeliveryId).getData();
         System.out.println("接收到的delivery = " + delivery);
         if (!checkAuth(delivery, user)) {
             throw new LeadNewsException(233, "权限不够");
@@ -212,7 +211,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         }
         try {
             Long expressId = dto.getExpressId();
-            Object data = adminFeign.longIdFindOne(expressId).getData();
+            ExpressDelivery record = adminFeign.longIdFindOne(expressId).getData();
             String statusPosition = "";
             switch (dto.getStatus()) {
                 case 1:
@@ -234,12 +233,8 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
                     statusPosition = "已签收";
                     break;
             }
-            ObjectMapper objectMapper = new ObjectMapper();
-            ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
 
-            Object data1 = expressDeliveryFeign.longIdFindOne(dto.getExpressId()).getData();
-            ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
-//            deliveryConfig.setCreateTime(new Date());
+            ExpressDeliveryConfig deliveryConfig = expressDeliveryFeign.longIdFindOne(dto.getExpressId()).getData();
             deliveryConfig.setCreateTime(new Date());
             deliveryConfig.setStatus(statusPosition);
             ExpressDelivery delivery = addDeliveryAddress(statusPosition, record, dto.getLocation());
@@ -259,11 +254,14 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
     }
 
     @Override
-    public Result checkOneById(ExpressDeliveryDto dto) {
-        Object data = adminFeign.longIdFindOne(dto.getExpressId()).getData();
-        ObjectMapper objectMapper = new ObjectMapper();
-        ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
-        return Result.ok(record);
+    public Result<Map<String,Object>> checkOneById(ExpressDeliveryDto dto) {
+        HashMap<String, Object> map = new HashMap<>();
+
+        ExpressDelivery record = adminFeign.longIdFindOne(dto.getExpressId()).getData();
+        String status = expressDeliveryFeign.longIdFindOne(dto.getExpressId()).getData().getStatus();
+        map.put("ExpressDelivery",record);
+        map.put("status",status);
+        return Result.ok(map);
     }
 
 

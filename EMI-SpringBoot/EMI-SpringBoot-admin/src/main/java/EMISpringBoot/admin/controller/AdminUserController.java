@@ -95,7 +95,7 @@ public class AdminUserController extends AbstractController<AdminUser> {
     }
 
     @PostMapping("/checkOneById")
-    public Result checkOneById(@RequestBody ExpressDeliveryDto dto){
+    public Result<Map<String,Object>> checkOneById(@RequestBody ExpressDeliveryDto dto){
         return adminUserService.checkOneById(dto);
     }
 

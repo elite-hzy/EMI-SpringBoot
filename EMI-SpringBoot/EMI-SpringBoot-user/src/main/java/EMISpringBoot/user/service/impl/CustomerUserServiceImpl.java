@@ -181,9 +181,7 @@ public class CustomerUserServiceImpl extends ServiceImpl<CustomerUserMapper, Cus
 
     @Override
     public Result checkOneById(ExpressDeliveryDto dto) {
-        Object data = adminFeign.longIdFindOne(dto.getExpressId()).getData();
-        ObjectMapper objectMapper = new ObjectMapper();
-        ExpressDelivery record = objectMapper.convertValue(data, ExpressDelivery.class);
+        ExpressDelivery record = adminFeign.longIdFindOne(dto.getExpressId()).getData();
         return Result.ok(record);
     }
 }

@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExpressDeliveryServiceImpl extends ServiceImpl<ExpressDeliveryMapper, ExpressDelivery> implements ExpressDeliveryService {
 
     @Override
-    public Result longIdFindOne(Long deliveryId) {
+    public Result<ExpressDelivery> longIdFindOne(Long deliveryId) {
         ExpressDelivery expressDelivery = getById(deliveryId);
         if (expressDelivery==null){
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);

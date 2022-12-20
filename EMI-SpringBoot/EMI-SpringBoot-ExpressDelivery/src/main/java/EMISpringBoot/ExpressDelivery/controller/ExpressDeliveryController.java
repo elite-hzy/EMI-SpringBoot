@@ -29,8 +29,23 @@ public class ExpressDeliveryController extends AbstractController<ExpressDeliver
     }
     //根据id查找一个
     @PostMapping("/findOne")
-    public Result longIdFindOne(@RequestParam("deliveryId")Long deliveryId){
+    public Result<ExpressDelivery> longIdFindOne(@RequestParam("deliveryId")Long deliveryId){
         return expressDeliveryService.longIdFindOne(deliveryId);
+    }
+    //管理员修改订单(用json,1揽收,9拒绝)
+    @PutMapping("/update1")
+    public Result<ExpressDelivery> update(@RequestBody ExpressDelivery record){
+        boolean flag = expressDeliveryService.updateById(record);
+        if (!flag) {
+            return Result.error();
+        }
+        return Result.ok(record);
+    }
+    //获取整个订单号
+    @GetMapping("/one1/{id}")
+    public Result<ExpressDelivery> findOne(@PathVariable("id")Integer id){
+        ExpressDelivery t = coreService.getById(id);
+        return Result.ok(t);
     }
 }
 
