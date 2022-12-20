@@ -113,7 +113,6 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         System.out.println("record = " + record);
         Object data1 = expressDeliveryFeign.longIdFindOne(ExpressDeliveryId).getData();
         ExpressDeliveryConfig deliveryConfig = objectMapper.convertValue(data1, ExpressDeliveryConfig.class);
-//        deliveryConfig.setCreateTime(new Date());
         deliveryConfig.setCreateTime(new Date());
         System.out.println("deliveryConfig = " + deliveryConfig);
         if (record == null || deliveryConfig == null) {
