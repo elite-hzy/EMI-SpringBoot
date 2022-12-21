@@ -7,6 +7,7 @@ import EMISpringBoot.admin.service.AdminUserService;
 import EMISpringBoot.common.controller.AbstractController;
 
 import EMISpringBoot.model.expressDelivery.ExpressDeliveryChangeDto;
+import EMISpringBoot.model.expressDelivery.dto.ExpressAdminSubmitDto;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryConfigDto;
 import EMISpringBoot.model.expressDelivery.dto.ExpressDeliveryDto;
 import EMISpringBoot.model.expressDelivery.pojos.ExpressDelivery;
@@ -60,9 +61,9 @@ public class AdminUserController extends AbstractController<AdminUser> {
 //        System.out.println("save = " + save);
 //    }
     //快递员揽收与否 传1或者9
-    @PutMapping("/auth_access/{id}")
-    public Result adminSubmitDelivery(@PathVariable("id") Integer id, Long deliveryId) {
-        return adminUserService.adminSubmitDelivery(id, deliveryId);
+    @PutMapping("/auth_access")
+    public Result adminSubmitDelivery(@RequestBody ExpressAdminSubmitDto dto) {
+        return adminUserService.adminSubmitDelivery(dto);
     }
 
 

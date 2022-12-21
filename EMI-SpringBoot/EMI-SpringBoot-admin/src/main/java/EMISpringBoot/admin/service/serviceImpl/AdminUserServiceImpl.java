@@ -6,6 +6,7 @@ import EMISpringBoot.admin.service.AdminUserService;
 import EMISpringBoot.common.dtos.Result;
 import EMISpringBoot.common.exception.AppHttpCodeEnum;
 import EMISpringBoot.common.exception.LeadNewsException;
+import EMISpringBoot.model.expressDelivery.dto.ExpressAdminSubmitDto;
 import EMISpringBoot.utils.JsonUtils;
 import EMISpringBoot.model.admin.pojos.AdminUser;
 import EMISpringBoot.admin.mapper.AdminUserMapper;
@@ -95,14 +96,15 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         断和ExpressDeliveryId(生成订单号)
      */
     @Override
-    public Result adminSubmitDelivery(Integer id, Long ExpressDeliveryId) {
-        //首先判断管理员有没有判断权限
+    public Result adminSubmitDelivery(ExpressAdminSubmitDto dto) {
+        //首先判断管理员有没有判断权限Integer id, Long ExpressDeliveryId
         AdminUser adminUser = (AdminUser) ThreadLocalUtils.get();
         if (adminUser == null) {
             throw new LeadNewsException(AppHttpCodeEnum.NEED_LOGIN);
         }
         Integer userId = adminUser.getUserId();
-
+        Long ExpressDeliveryId = dto.getDeliveryId();
+        Integer id = dto.getId();
         if (id == null || ExpressDeliveryId == null) {
             throw new LeadNewsException(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
