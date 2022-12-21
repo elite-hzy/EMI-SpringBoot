@@ -93,12 +93,12 @@ public class ExpressDeliveryConfigServiceImpl extends ServiceImpl<ExpressDeliver
         QueryWrapper<ExpressDeliveryConfig> queryWrapper = new QueryWrapper<>();
         //送达为6
         queryWrapper.eq("status", 6);
-        map.put("delivered:", Integer.toString(count(queryWrapper)));
+        map.put("delivered", Integer.toString(count(queryWrapper)));
         queryWrapper = new QueryWrapper<ExpressDeliveryConfig>();
         //异常为4
         queryWrapper.eq("status", 4);
-        map.put("exception:", Integer.toString(count(queryWrapper)));
-        map.put("delivered 送达","exception 异常,number快递数量");
+        map.put("exception", Integer.toString(count(queryWrapper)));
+        map.put("delivered 送达数量","exception 异常数量,number快递数量");
         return Result.ok(map);
     }
 }
