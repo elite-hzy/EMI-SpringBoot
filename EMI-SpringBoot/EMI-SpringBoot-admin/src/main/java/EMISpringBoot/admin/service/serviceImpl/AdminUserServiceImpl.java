@@ -132,7 +132,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             ArrayList<Map> MapList = new ArrayList<>();
             MapList.add(map1);
             record.setAllowStationChange(JSONObject.toJSONString(MapList));
-
+            deliveryConfig.setStatus("1");
         }
         if (id == 9) {
             map.put("text", "9");
